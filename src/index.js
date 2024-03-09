@@ -14,7 +14,7 @@ const [fileName] = args
  * This functions return the content of the file text named Lucas.txt
  * @returns {Promise<string>} - The content of the file
  */
-const readfile = async () => {
+const readBook = async () => {
   return await fs.readFile(`${fileName}.txt`, 'utf-8')
 }
 /**
@@ -30,7 +30,7 @@ const deleteSpecialCharacters = (text) => {
  * @param {string} text - The text to get the keywords
  * @returns {Array<string>} - An Array of keywords from the text
  */
-const keywords = (text) => {
+const getKeywords = (text) => {
   const words = text.toLowerCase().split(' ')
   // This are all words in the text, without repeated words
   const allWords = [...new Set(words)]
@@ -55,21 +55,27 @@ const writeKeywords = async (keywords) => {
  */
 const generateKeywordsFormat = (keywords) => {
   const COLUMNS = 5
-  let format = '# Palabras clave del Libro de Lucas\n\n\tCantidad de palabras clave: ' + keywords.length + '\n\n'
+
+  let format = `# Palabras clave del Libro de Lucas\n
+  \tCantidad de palabras clave: ' + keywords.length + '\n\n`
+
   keywords.forEach((keyword, index) => {
-    if (index % COLUMNS === 0) {
-      format += '\n'
-    }
+    if (index % COLUMNS === 0) format += '\n'
+
     format += keyword + ' '.repeat(20 - keyword.length)
   })
+
   return format
 }
 
 // Self invoking function
 ;(() => {
-  readfile()
+  readBook()
     .then((text) =>
-
-      console.log(keywords(deleteSpecialCharacters(text))))
-    .catch((err) => console.error(err))
+      writeKeywords(
+        getKeywords(
+          deleteSpecialCharacters(text)
+        )
+      )
+    ).catch((err) => console.error(err))
 })()
