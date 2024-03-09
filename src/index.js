@@ -57,7 +57,7 @@ const generateKeywordsFormat = (keywords) => {
   const COLUMNS = 5
 
   let format = `# Palabras clave del Libro de Lucas\n
-  \tCantidad de palabras clave: ' + keywords.length + '\n\n`
+  \tCantidad de palabras clave: ${keywords.length} \n\n`
 
   keywords.forEach((keyword, index) => {
     if (index % COLUMNS === 0) format += '\n'
@@ -68,14 +68,18 @@ const generateKeywordsFormat = (keywords) => {
   return format
 }
 
-// Self invoking function
-;(() => {
-  readBook()
-    .then((text) =>
-      writeKeywords(
-        getKeywords(
-          deleteSpecialCharacters(text)
-        )
-      )
-    ).catch((err) => console.error(err))
-})()
+try {
+  const book = await readBook()
+
+  const cleanBook = deleteSpecialCharacters(book)
+
+  const keywords = getKeywords(cleanBook)
+
+  await writeKeywords(keywords)
+
+  console.log(keywords)
+} catch (error) {
+  console.error(error)
+} finally {
+  console.log('Process finished')
+}
